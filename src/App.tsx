@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ErrorBoundary, useErrorBoundary } from 'react-error-boundary';
 
 const DummyComponent = ({
@@ -12,16 +12,22 @@ const DummyComponent = ({
 }) => {
   const { showBoundary } = useErrorBoundary();
 
+  useEffect(() => {
+    if (Math.random() > 0.95)
+      throw new Error('useEffect: handled by error boundary');
+  }, [count]);
+
   const handleClick = () => {
     try {
-      if (Math.random() > 0.9) throw new Error('this should not have happened');
+      if (Math.random() > 0.95)
+        throw new Error('handleClick: this should not have happened');
       setCount((count) => count + 1);
     } catch (error) {
       showBoundary(error);
     }
   };
 
-  if (!fixed) throw new Error('in render');
+  if (!fixed) throw new Error('render: error while rendering');
   return (
     <button
       onClick={handleClick}
